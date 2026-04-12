@@ -1,0 +1,1 @@
+<img src="{{ asset('images/car-logo.png') }}" class="w-25 h-11"{{ $attributes }} alt="Logo">

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $fillable = ['user_id', 'station_id', 'booking_time', 'status'];
-    
+    protected $fillable = ['user_id', 'station_id', 'booking_time', 'status', 'started_at', 'ended_at'];
+    protected $casts = ['started_at' => 'datetime', 'ended_at' => 'datetime'];
     /*Update Booking Model*/
     public function user()
     {
@@ -16,6 +16,6 @@ class Booking extends Model
     
     public function station()
     {
-        return $this->belongsTo(Stations::class);
+        return $this->belongsTo(Station::class);
     }
 }
