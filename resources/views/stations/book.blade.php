@@ -1,6 +1,17 @@
 <x-app-layout>
     <div class="py-12 bg-[#f8f9fa] min-h-screen">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            
+            @if ($errors->any())
+                <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-xl shadow-sm">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
                 
                 <div class="h-64 w-full bg-gray-200 relative">
@@ -25,14 +36,14 @@
                         <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($station->address) }}" 
                            target="_blank"
                            class="flex items-center text-center gap-2 bg-white border-2 border-[#89a57b] text-[#89a57b] px-6 py-2 rounded-3xl font-bold hover:bg-[#89a57b] hover:text-white transition">
-                            <i class="fa-solid fa-paper-plane"></i> NAGIVATIONS
+                            <i class="fa-solid fa-paper-plane"></i> NAVIGATIONS
                         </a>
                     </div>
 
                     <div class="mb-8">
                         <h3 class="font-bold text-gray-800 mb-2">Description :</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            This charging station provides up to 250Kwh high-speed DC charging compatible with most EVs. Located in a convenient area with shopping malls to enjoy while you wait.
+                            This charging station provides up to 250kWh high-speed DC charging compatible with most EVs. Located in a convenient area with shopping malls to enjoy while you wait.
                         </p>
                     </div>
 
@@ -43,12 +54,26 @@
                             @csrf
                             <input type="hidden" name="station_id" value="{{ $station->id }}">
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Date & Time</label>
                                     <input type="datetime-local" name="booking_time" 
-                                           class="w-full border-gray-200 rounded-xl shadow-sm focus:ring-[#89a57b] focus:border-[#89a57b]" 
-                                           required>
+                                        min="{{ now()->format('Y-m-d\TH:i') }}"
+                                        class="w-full border-gray-200 rounded-xl shadow-sm focus:ring-[#89a57b] focus:border-[#89a57b]" 
+                                        required>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Charging Duration</label>
+                                    <select name="duration" 
+                                            class="w-full border-gray-200 rounded-xl shadow-sm focus:ring-[#89a57b] focus:border-[#89a57b]" 
+                                            required>
+                                        <option value="30">30 Minutes</option>
+                                        <option value="60" selected>1 Hour</option>
+                                        <option value="120">2 Hours</option>
+                                        <option value="180">3 Hours</option>
+                                        <option value="240">4 Hours</option>
+                                    </select>
                                 </div>
                             </div>
 

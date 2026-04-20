@@ -23,16 +23,39 @@ class BookingController extends Controller
         $validated = $request->validate([
             'station_id'=>'required|exists:stations,id',
             'booking_time'=>'required|date|after:now',
+            'duration' => 'required|integer|min:15|max:240',
         ]);
 
-        Booking::create([
-            'user_id' => Auth::id(),
-            'station_id' => $validated['station_id'],
-            'booking_time' => $validated['booking_time'],
-            'status' => 'confirmed',
-        ]);
+        $startTime = \Carbon\Carbon::parse($validated['booking_time']);
+        $endTime = (clone $startTime)->addMinutes((int) $validated['duration']);
 
-        return redirect()->route('bookings.index')->with('success', 'Booking successfully!');
+        return \DB::transaction(function () use ($validated, $startTime, $endTime) {
+            $station = Station::where('id', $validated['station_id'])->lockForUpdate()->first();
+
+            $overlapCount = Booking::where('station_id', $validated['station_id'])
+                ->whereIn('status', ['confirmed', 'charging'])
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->where(function ($q) use ($startTime, $endTime) {
+                        $q->where('booking_time', '<', $endTime)
+                        ->whereRaw('DATE_ADD(booking_time, INTERVAL duration MINUTE) > ?', [$startTime]);
+                    });
+                })
+                ->count();
+
+            if ($overlapCount >= $station->total_charging_points) {
+                return redirect()->back()->withErrors(['booking_time' => 'The outlets are full during this time slot. Please select another time.']);
+            }
+
+            Booking::create([
+                'user_id' => Auth::id(),
+                'station_id' => $validated['station_id'],
+                'booking_time' => $startTime,
+                'duration' => $validated['duration'],
+                'status' => 'confirmed',
+            ]);
+
+            return redirect()->route('bookings.index')->with('success', 'Booking successfully!');
+        });
     }
 
     //Cancel Booking/
@@ -54,6 +77,21 @@ class BookingController extends Controller
     //Start Charging/
     public function startCharging(Booking $booking)
     {
+        $station = $booking->station;
+        $bookingTime = \Carbon\Carbon::parse($booking->booking_time);
+
+        if (now()->lessThan($bookingTime->copy()->subMinutes(5))) {
+            return redirect()->back()->with('error', 'Too early to start charging. You can start charging 5 minutes before the booking time.');
+        }
+
+        $currentChargingCount = \App\Models\Booking::where('station_id', $booking->station_id)
+            ->where('status', 'charging')
+            ->count();
+
+        if ($currentChargingCount >= $station->total_charging_points) {
+            return redirect()->back()->with('error', 'All charging slots are currently occupied. Please wait for the previous user to finish.');
+        }
+
         $booking->update([
             'status' => 'charging',
             'started_at' => now(),

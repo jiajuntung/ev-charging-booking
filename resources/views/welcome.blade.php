@@ -1,5 +1,5 @@
 <x-app-layout>
-    {{-- 1. Guest Welcome Alert / 访客欢迎提示 --}}
+    {{-- 1. Guest Welcome Alert --}}
     <div class="bg-[#dfeada] p-4 shadow-sm">
         <div class="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-[#707a51] font-bold">

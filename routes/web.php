@@ -5,10 +5,14 @@ use App\Http\Controllers\StationController;
 use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 
-//Popular Stations on Home Page/
 Route::get('/', function () {
-    $popularStations = \App\Models\Station::take(10)->get();
-
+    try {
+        $popularStations = \App\Models\Station::take(10)->get();
+        
+        return view('welcome', compact('popularStations'));
+    } catch (\Exception $e) {
+        return "Database connection error: " . $e->getMessage();
+    }
 });
 
 //Dashboard Route/

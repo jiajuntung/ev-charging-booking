@@ -5,6 +5,22 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(session('error'))
+                <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 shadow-sm">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
+            @if(session('success'))
+                <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 shadow-sm">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-check-circle mr-2"></i>
+                        {{ session('success') }}
+                    </div>
+                </div>
+            @endif
             <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden border">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-blue-50 border-b">
@@ -33,22 +49,32 @@
                                     </td>
 
                                     <td class="p-4">
-                                        @if($booking->status != 'completed' && $booking->status != 'charging')
-                                            <form action="{{ route('bookings.start', $booking) }}" method="POST">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition shadow-sm">
-                                                    Start Charging
-                                                </button>
-                                            </form>
-                                        @elseif($booking->status == 'charging')
-                                            <a href="{{ route('bookings.status', $booking) }}"
-                                                class="bg-green-500 text-white px-3 py-1 rounded text-sm inline-block hover:bg-green-600 shadow-sm">
-                                                View Status ⚡
-                                            </a>
-                                        @else
-                                            <span class="text-gray-400 text-xs italic">Session Ended</span>
-                                        @endif
+                                        <div class="flex items-center gap-2">
+                                            @if($booking->status == 'confirmed')
+                                                <form action="{{ route('bookings.start', $booking) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition shadow-sm">
+                                                        Start Charging
+                                                    </button>
+                                                </form>
+
+                                                <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition shadow-sm">
+                                                        Cancel
+                                                    </button>
+                                                </form>
+
+                                            @elseif($booking->status == 'charging')
+                                                <a href="{{ route('bookings.status', $booking) }}" class="bg-green-500 text-white px-3 py-1 rounded text-sm inline-block hover:bg-green-600 shadow-sm">
+                                                    View Status ⚡
+                                                </a>
+
+                                            @else
+                                                <span class="text-gray-400 text-xs italic">Session Ended</span>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                         @empty
