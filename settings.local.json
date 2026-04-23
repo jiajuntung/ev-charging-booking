@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan *)",
+      "Bash(npm run *)",
+      "Bash(php -l \"D:\\\\ev-charging-booking\\\\app\\\\Http\\\\Controllers\\\\Auth\\\\AuthenticatedSessionController.php\")",
+      "Bash(php -l \"D:\\\\ev-charging-booking\\\\app\\\\Http\\\\Controllers\\\\Auth\\\\RegisteredUserController.php\")"
+    ]
+  }
+}

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $fillable = ['user_id', 'station_id', 'booking_time', 'duration', 'status', 'started_at', 'ended_at'];
+    protected $fillable = ['user_id', 'station_id', 'booking_time', 'duration', 'status', 'started_at', 'ended_at', 'kwh_charged', 'amount_charged'];
     protected $casts = ['booking_time' => 'datetime', 'started_at' => 'datetime', 'ended_at' => 'datetime'];
 
     /*Update Booking Model*/
@@ -20,7 +20,7 @@ class Booking extends Model
         return $this->belongsTo(Station::class);
     }
 
-    public function getEndAndAttribute()
+    public function getEndTimeAttribute()
     {
         return $this->booking_time->addMinutes($this->duration);
     }

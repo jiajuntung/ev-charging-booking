@@ -26,19 +26,10 @@
 
     <div class="relative w-full h-[380px] bg-white overflow-hidden border-b border-gray-100">
 
-        <div class="absolute inset-0 z-0 opacity-[0.1] mix-blend-multiply">
-            <img src="{{ asset('images/charging-bg.png') }}" class="w-full h-full object-cover"
-                alt="Background Texture">
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/charging-bg-2.png') }}" class="w-full h-full object-cover" alt="">
+            <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/50 to-white/10"></div>
         </div>
-
-        <div
-            class="absolute -left-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#89a57b]/10 rounded-full blur-3xl">
-        </div>
-        <div class="absolute right-0 top-0 w-80 h-80 bg-[#89a57b]/5 rounded-full blur-3xl"></div>
-
-        <img src="{{ asset('images/car.png') }}"
-            class="absolute left-64 top-1/2 -translate-y-1/2 w-1/2 h-auto object-contain z-10 drop-shadow-[0_20px_30px_rgba(0,0,0,0.1)]"
-            alt="EV Charging">
 
         <div class="absolute inset-0 bg-gradient-to-r "></div>
 

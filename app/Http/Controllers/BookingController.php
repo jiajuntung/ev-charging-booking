@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Station;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class BookingController extends Controller
@@ -26,10 +28,10 @@ class BookingController extends Controller
             'duration' => 'required|integer|min:15|max:240',
         ]);
 
-        $startTime = \Carbon\Carbon::parse($validated['booking_time']);
+        $startTime = Carbon::parse($validated['booking_time']);
         $endTime = (clone $startTime)->addMinutes((int) $validated['duration']);
 
-        return \DB::transaction(function () use ($validated, $startTime, $endTime) {
+        return DB::transaction(function () use ($validated, $startTime, $endTime) {
             $station = Station::where('id', $validated['station_id'])->lockForUpdate()->first();
 
             $overlapCount = Booking::where('station_id', $validated['station_id'])
@@ -78,13 +80,13 @@ class BookingController extends Controller
     public function startCharging(Booking $booking)
     {
         $station = $booking->station;
-        $bookingTime = \Carbon\Carbon::parse($booking->booking_time);
+        $bookingTime = Carbon::parse($booking->booking_time);
 
         if (now()->lessThan($bookingTime->copy()->subMinutes(5))) {
             return redirect()->back()->with('error', 'Too early to start charging. You can start charging 5 minutes before the booking time.');
         }
 
-        $currentChargingCount = \App\Models\Booking::where('station_id', $booking->station_id)
+        $currentChargingCount = Booking::where('station_id', $booking->station_id)
             ->where('status', 'charging')
             ->count();
 
@@ -101,13 +103,20 @@ class BookingController extends Controller
     }
 
     //Stop Charging/
-    public function stopCharging(Booking $booking)
+    public function stopCharging(Request $request, Booking $booking)
     {
+        $request->validate([
+            'kwh_charged'    => 'required|numeric|min:0',
+            'amount_charged' => 'required|numeric|min:0',
+        ]);
+
         $booking->update([
             'status' => 'completed',
             'ended_at' => now(),
+            'kwh_charged' => $request->kwh_charged,
+            'amount_charged' => $request->amount_charged,
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Charging Finished!');
-    } 
+        return redirect()->route('payment.show', $booking->id);
+    }
 }
