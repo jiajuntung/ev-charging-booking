@@ -1,10 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(php artisan *)",
       "Bash(npm run *)",
+      "Bash(php artisan *)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(node generate_report.js)",
       "Bash(php -l \"D:\\\\ev-charging-booking\\\\app\\\\Http\\\\Controllers\\\\Auth\\\\AuthenticatedSessionController.php\")",
-      "Bash(php -l \"D:\\\\ev-charging-booking\\\\app\\\\Http\\\\Controllers\\\\Auth\\\\RegisteredUserController.php\")"
+      "Bash(php -l \"D:\\\\ev-charging-booking\\\\app\\\\Http\\\\Controllers\\\\Auth\\\\RegisteredUserController.php\")",
+      "Read(//c/Users/ffhua/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/a396c8c5-b040-4c42-9a64-02cb98676442/9ee0ec97-781a-4c13-84c9-1494c45a19d0/skills/docx/**)",
+      "Bash(copy \"C:\\\\Users\\\\ffhua\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\a396c8c5-b040-4c42-9a64-02cb98676442\\\\9ee0ec97-781a-4c13-84c9-1494c45a19d0\\\\skills\\\\docx\\\\ChargeX_Report.docx\" \"D:\\\\ev-charging-booking\\\\ChargeX_Report.docx\")"
     ]
   }
 }
