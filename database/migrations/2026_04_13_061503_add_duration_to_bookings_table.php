@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->integer('duration')->default(60); // 默认 60 分钟
+            $table->integer('duration')->default(60); 
         });
     }
 

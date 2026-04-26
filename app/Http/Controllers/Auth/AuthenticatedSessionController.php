@@ -26,6 +26,7 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        // Regenerate session ID after login (prevents session fixation)
         $request->session()->regenerate();
 
         return redirect()->intended('/');
@@ -38,8 +39,10 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
+        // Invalidate all session data
         $request->session()->invalidate();
 
+        // Regenerate CSRF token
         $request->session()->regenerateToken();
 
         return redirect('/');

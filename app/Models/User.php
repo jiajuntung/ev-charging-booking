@@ -24,6 +24,10 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected $casts = [
+        'is_admin' => 'boolean', 
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -31,7 +35,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token', // encrypted, stored in cookies for "Remember Me"
     ];
 
     /**
@@ -47,7 +51,7 @@ class User extends Authenticatable
         ];
     }
 
-    /*Update User Model*/
+    /*UOne user has many booking*/
     public function bookings() {
         return $this->hasMany(Booking::class);
     }

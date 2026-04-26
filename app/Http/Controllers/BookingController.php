@@ -25,7 +25,7 @@ class BookingController extends Controller
         $validated = $request->validate([
             'station_id'=>'required|exists:stations,id',
             'booking_time'=>'required|date|after:now',
-            'duration' => 'required|integer|min:15|max:240',
+            'duration' => 'required|integer|min:30|max:240',
         ]);
 
         $startTime = Carbon::parse($validated['booking_time']);
